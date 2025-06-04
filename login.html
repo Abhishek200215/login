@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Premium Membership Portal</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    color: #fff;
+    overflow-x: hidden;
+  }
+
+  .container {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: 0 25px 45px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 450px;
+    padding: 40px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  .container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.05);
+    transform: skewX(-15deg);
+    transition: 0.5s;
+  }
+
+  .container:hover::before {
+    left: 120%;
+  }
+
+  h2 {
+    margin: 0 0 30px 0;
+    font-weight: 600;
+    font-size: 28px;
+    text-align: center;
+    background: linear-gradient(to right, #fff, #a1c4fd);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: relative;
+    animation: fadeInDown 0.8s ease;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    animation: fadeIn 1s ease;
+  }
+
+  .form-group {
+    position: relative;
+    margin-bottom: 25px;
+  }
+
+  label {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 400;
+    font-size: 14px;
+    pointer-events: none;
+    transition: all 0.3s ease;
+  }
+
+  input {
+    width: 100%;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    color: #fff;
+    transition: all 0.3s ease;
+    border-left: 2px solid transparent;
+  }
+
+  input:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.15);
+    border-left: 2px solid #a1c4fd;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  input:focus + label,
+  input:valid + label {
+    top: -10px;
+    left: 10px;
+    font-size: 12px;
+    background: linear-gradient(to right, #a1c4fd, #c2e9fb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    padding: 0 5px;
+  }
+
+  button {
+    background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
+    color: #2c3e50;
+    font-weight: 600;
+    border: none;
+    padding: 16px;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+    box-shadow: 0 5px 15px rgba(161, 196, 253, 0.3);
+    position: relative;
+    overflow: hidden;
+  }
+
+  button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(161, 196, 253, 0.4);
+  }
+
+  button:active {
+    transform: translateY(1px);
+  }
+
+  button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transition: 0.5s;
+  }
+
+  button:hover::before {
+    left: 100%;
+  }
+
+  .toggle-link {
+    margin-top: 25px;
+    font-size: 14px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .toggle-link:hover {
+    color: #a1c4fd;
+  }
+
+  .toggle-link::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 2px;
+    background: linear-gradient(to right, #a1c4fd, #c2e9fb);
+    transition: width 0.3s ease;
+  }
+
+  .toggle-link:hover::after {
+    width: 100%;
+  }
+
+  .error-msg {
+    color: #ff6b6b;
+    font-size: 13px;
+    margin: -15px 0 15px 0;
+    text-align: center;
+    animation: shake 0.5s ease;
+  }
+
+  .success-msg {
+    color: #6bff6b;
+    font-size: 14px;
+    text-align: center;
+    margin: -15px 0 15px 0;
+    animation: fadeIn 0.5s ease;
+  }
+
+  .welcome-back {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.5s ease;
+  }
+
+  .welcome-back.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .welcome-back h3 {
+    font-size: 28px;
+    margin-bottom: 20px;
+    background: linear-gradient(to right, #a1c4fd, #c2e9fb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .welcome-back p {
+    margin-bottom: 30px;
+    color: rgba(255, 255, 255, 0.8);
+    max-width: 80%;
+    text-align: center;
+  }
+
+  .welcome-back button {
+    background: transparent;
+    color: #a1c4fd;
+    border: 1px solid #a1c4fd;
+    box-shadow: none;
+  }
+
+  .welcome-back button:hover {
+    background: rgba(161, 196, 253, 0.1);
+  }
+
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+  }
+
+  /* New user specific styles */
+  .register-form .form-group input {
+    border-left: 2px solid #a1c4fd;
+  }
+
+  .register-form button {
+    background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
+  }
+
+  /* Returning user specific styles */
+  .login-form .form-group input {
+    border-left: 2px solid #ff9a9e;
+  }
+
+  .login-form button {
+    background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+    box-shadow: 0 5px 15px rgba(255, 154, 158, 0.3);
+  }
+
+  .login-form button:hover {
+    box-shadow: 0 8px 20px rgba(255, 154, 158, 0.4);
+  }
+
+  .login-form button::before {
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  }
+
+  /* Responsive */
+  @media (max-width: 480px) {
+    .container {
+      padding: 30px 20px;
+      border-radius: 15px;
+    }
+    
+    h2 {
+      font-size: 24px;
+      margin-bottom: 25px;
+    }
+    
+    input {
+      padding: 12px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="container" id="container">
+  <div class="welcome-back" id="welcome-back">
+    <h3>Welcome Back, <span id="welcome-username"></span>!</h3>
+    <p>Your premium membership gives you access to exclusive content and features.</p>
+    <button id="continue-btn">Continue to Dashboard</button>
+  </div>
+
+  <h2 id="form-title">Join Our Community</h2>
+
+  <form id="register-form" class="register-form">
+    <div class="form-group">
+      <input type="email" id="email" required />
+      <label for="email">Email (Gmail)</label>
+    </div>
+
+    <div class="form-group">
+      <input type="tel" id="phone" required />
+      <label for="phone">Phone Number</label>
+    </div>
+
+    <div class="form-group">
+      <input type="text" id="username" required />
+      <label for="username">Username</label>
+    </div>
+
+    <div class="form-group">
+      <input type="password" id="password" required />
+      <label for="password">Password</label>
+    </div>
+
+    <div class="error-msg" id="register-error"></div>
+    <div class="success-msg" id="register-success"></div>
+
+    <button type="submit">Create Account</button>
+  </form>
+
+  <form id="login-form" class="login-form" style="display:none;">
+    <div class="form-group">
+      <input type="text" id="login-username" required />
+      <label for="login-username">Username</label>
+    </div>
+
+    <div class="form-group">
+      <input type="password" id="login-password" required />
+      <label for="login-password">Password</label>
+    </div>
+
+    <div class="error-msg" id="login-error"></div>
+    <div class="success-msg" id="login-success"></div>
+
+    <button type="submit">Sign In</button>
+  </form>
+
+  <div class="toggle-link" id="toggle-link">Already a member? Sign In</div>
+</div>
+
+<script>
+  const registerForm = document.getElementById('register-form');
+  const loginForm = document.getElementById('login-form');
+  const toggleLink = document.getElementById('toggle-link');
+  const formTitle = document.getElementById('form-title');
+  const welcomeBack = document.getElementById('welcome-back');
+  const welcomeUsername = document.getElementById('welcome-username');
+  const continueBtn = document.getElementById('continue-btn');
+
+  const registerError = document.getElementById('register-error');
+  const registerSuccess = document.getElementById('register-success');
+  const loginError = document.getElementById('login-error');
+  const loginSuccess = document.getElementById('login-success');
+
+  function clearMessages() {
+    registerError.textContent = '';
+    registerSuccess.textContent = '';
+    loginError.textContent = '';
+    loginSuccess.textContent = '';
+  }
+
+  // Toggle between forms
+  toggleLink.addEventListener('click', () => {
+    clearMessages();
+    if (registerForm.style.display !== 'none') {
+      // Switch to login
+      registerForm.style.display = 'none';
+      loginForm.style.display = 'flex';
+      formTitle.textContent = 'Welcome Back';
+      toggleLink.textContent = "New here? Join Us";
+      
+      // Animation effect
+      loginForm.style.animation = 'none';
+      setTimeout(() => {
+        loginForm.style.animation = 'fadeIn 0.5s ease';
+      }, 10);
+    } else {
+      // Switch to register
+      loginForm.style.display = 'none';
+      registerForm.style.display = 'flex';
+      formTitle.textContent = 'Join Our Community';
+      toggleLink.textContent = 'Already a member? Sign In';
+      
+      // Animation effect
+      registerForm.style.animation = 'none';
+      setTimeout(() => {
+        registerForm.style.animation = 'fadeIn 0.5s ease';
+      }, 10);
+    }
+  });
+
+  // Register form submission
+  registerForm.addEventListener('submit', e => {
+    e.preventDefault();
+    clearMessages();
+
+    const email = document.getElementById('email').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const username = document.getElementById('username').value.trim().toLowerCase();
+    const password = document.getElementById('password').value;
+
+    // Validate Gmail
+    const gmailPattern = /^[a-z0-9._%+-]+@gmail\.com$/;
+    if (!gmailPattern.test(email)) {
+      registerError.textContent = 'Please enter a valid Gmail address.';
+      return;
+    }
+
+    // Validate phone
+    const phonePattern = /^\+?\d{10,15}$/;
+    if (!phonePattern.test(phone)) {
+      registerError.textContent = 'Please enter a valid phone number with country code.';
+      return;
+    }
+
+    // Check if user exists
+    if (localStorage.getItem(`user_${username}`)) {
+      registerError.textContent = 'Username already taken. Please choose another.';
+      return;
+    }
+
+    // Store user data
+    const userData = {
+      email,
+      phone,
+      username,
+      password,
+      joinDate: new Date().toLocaleDateString(),
+      premium: true
+    };
+
+    localStorage.setItem(`user_${username}`, JSON.stringify(userData));
+
+    // Success animation
+    registerSuccess.textContent = 'Registration successful! Welcome to our community.';
+    registerForm.reset();
+    
+    // Show welcome briefly then switch to login
+    setTimeout(() => {
+      toggleLink.click();
+    }, 1500);
+  });
+
+  // Login form submission
+  loginForm.addEventListener('submit', e => {
+    e.preventDefault();
+    clearMessages();
+
+    const username = document.getElementById('login-username').value.trim().toLowerCase();
+    const password = document.getElementById('login-password').value;
+
+    const storedUser = localStorage.getItem(`user_${username}`);
+    if (!storedUser) {
+      loginError.textContent = 'User not found. Please register first.';
+      return;
+    }
+
+    const userData = JSON.parse(storedUser);
+    if (userData.password !== password) {
+      loginError.textContent = 'Incorrect password. Try again.';
+      return;
+    }
+
+    // Show premium welcome screen
+    welcomeUsername.textContent = userData.username;
+    welcomeBack.classList.add('active');
+    loginForm.reset();
+  });
+
+  // Continue button
+  continueBtn.addEventListener('click', () => {
+    welcomeBack.classList.remove('active');
+    // Here you would typically redirect to the dashboard
+     window.location.href = 'https://abhishek200215.github.io/abhishek15/';
+  });
+
+  // Add floating particles for premium effect
+  document.addEventListener('DOMContentLoaded', () => {
+    const container = document.getElementById('container');
+    const particleCount = 20;
+    
+    for (let i = 0; i < particleCount; i++) {
+      const particle = document.createElement('div');
+      particle.style.position = 'absolute';
+      particle.style.width = Math.random() * 5 + 2 + 'px';
+      particle.style.height = particle.style.width;
+      particle.style.background = 'rgba(161, 196, 253, 0.5)';
+      particle.style.borderRadius = '50%';
+      particle.style.top = Math.random() * 100 + '%';
+      particle.style.left = Math.random() * 100 + '%';
+      particle.style.zIndex = '0';
+      
+      // Animation
+      particle.style.animation = `float ${Math.random() * 10 + 5}s linear infinite`;
+      particle.style.animationDelay = Math.random() * 5 + 's';
+      
+      container.appendChild(particle);
+    }
+    
+    // Add floating animation
+    const style = document.createElement('style');
+    style.innerHTML = `
+      @keyframes float {
+        0% {
+          transform: translate(0, 0) rotate(0deg);
+          opacity: 0.5;
+        }
+        50% {
+          transform: translate(${Math.random() > 0.5 ? '' : '-'}${Math.random() * 50 + 20}px, ${Math.random() * 50 + 20}px) rotate(180deg);
+          opacity: 1;
+        }
+        100% {
+          transform: translate(0, 0) rotate(360deg);
+          opacity: 0.5;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  });
+</script>
+
+</body>
+</html>
